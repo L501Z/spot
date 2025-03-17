@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello</title>
+    <script>
+    </script>
+</head>
+<body>
+    <nav class="topnav">
+        <li><a class="active" href="#home">Home</a></li>
+        <li><a href="#news">Tutorial</a></li>
+        <li><a href="#contact">About</a></li>
+        <li><img class="navImg" src="spotify.png" height="100px"></li>
+    </nav>
+
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            background-color: rgb(30, 30, 30);
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(255, 255, 255);
+        }
+        .topnav{
+            width: 100%;
+            height: 13vh;
+            background-color: rgb(125, 124, 123);
+            color: white;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        li {
+            float: left;
+            width: 10vw;
+        }
+
+        .navImg{
+            padding-left: 580%;
+            padding-top: 6%;
+        }
+
+        li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 56px 16px;
+        text-decoration: none;
+        }
+
+        li a:hover {
+        background-color: #111;
+        }
+
+        .active {
+        background-color: #252625;
+        }
+    </style>
+<div class="userDataContainer">
+    <div class="userData">
+        <form action="/log_on_spotify"><button id="logIn">LOG IN</button></form>
+    </div>
+</div>
+
+<style>
+    .userData{
+        background-color: rgb(22, 21, 22);
+        width: 40vw;
+        border-radius: 25px;
+        grid-row: 2;
+        grid-column: 2;
+        display: grid;
+        grid-template-columns: 250px 250px 250px;
+        grid-template-rows: 200px 300px;
+    }
+    .userDataContainer{
+        display: grid;
+        grid-template-columns: 30% 30%;
+        grid-template-rows: 200px 300px;
+    }
+    .displayNamePretext{
+        margin-left: 30%;
+        grid-column: 2/4;
+    }
+    #displayName{
+        margin-left: 45%;
+    }
+    #logIn{
+        margin-top: 38%;
+        margin-left: 40%;
+        text-decoration: none;
+        padding: 10px;
+        font-family: "Open Sans", sans-serif;
+        font-size: 16px;
+        letter-spacing: 2px;
+        width: 15vw;
+        height: 10vh;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #000;
+        cursor: pointer;
+        border: 3px solid;
+        padding: 0.25em 0.5em;
+        box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+    #logIn:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+    }
+
+    @media (min-width: 768px) {
+    #logIn {
+        padding: 0.25em 0.75em;
+    }
+}
+    
+</style>
+
+
+</body>
+</html>
