@@ -2,8 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import querystring from 'query-string';
-import jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import fs from 'fs';
+import crypto from 'crypto';
 
 const vars = dotenv.config()
 const app = express();
@@ -17,9 +18,11 @@ app.use(express.static(__dirname+'\\views'))
 app.use(bodyParser.json() );     
 app.use(bodyParser.urlencoded({ extended: true })); 
 
+
 app.get('/', (req,res) => {
     res.status(200).render(__dirname+"\\views");
 })
+
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -98,6 +101,8 @@ app.get('/callback', async function(req, res) {
   });
 
 let userid = null;
+let currentPlaylistArray = new Array();
+let currentPlaylistMap = new Map();
 
 app.get('/profile', async(req,res) => {
   try{
@@ -129,23 +134,50 @@ app.get('/playlists', async(req,res) => {
   }
 })
 
-app.post('/convertplaylist',async(req,res) => {
-  getSpotifyTracks(req.body.playlistid)
-  
-  //prompt user to log into apple music
+let playlistid = ""
 
-  //promp user for new playlist name
+app.post('/convertplaylist',async(req,res) => {  
+  playlistid = req.body.playlistid;
+  const redirect_uri_sound = "127.0.0.1:3000/soundcloudcallback".toString('base64');
+  const state = generateRandomString(60);
+  const clientId = process.env.SOUNDCLOUD_CLIENT_ID
+  const code_verifier = crypto.pseudoRandomBytes(65).toString('base64');
+  const codeChallenge = crypto
+  .createHash('sha256')
+  .update(code_verifier)
+  .digest('base64') // Convert to base64
+  .replace(/\+/g, '-')  // Replace "+" with "-"
+  .replace(/\//g, '_')  // Replace "/" with "_"
+  .replace(/=+$/, '');  // Remove padding
+  const params =  new URLSearchParams({
+    client_id: clientId, 
+    redirect_uri: redirect_uri_sound,
+    code_challenge:codeChallenge,
+    code_challenge_method:"S256",
+    response_type: 'code',  // Added the missing response_type parameter
+  });
+  console.log(codeChallenge)
+  console.log(code_verifier)
 
-  //begin the process of converting
+  const url=`https://secure.soundcloud.com/authorize?${params.toString()}`;
+  try{
+    res.set("Allow-Control-Access-Origin","http://127.0.0.1:3000")
 
-  //once there is a basic working app then the process really starts of improving and getting rid of bugs
-
+    res.redirect(url)
+  }
+  catch (error){
+    console.log(error)
+  }
 })
 
 
+app.post('/soundcloudcallback', async(req,res)=>{
+  console.log(req.query)
 
-let currentPlaylistArray = new Array();
-let currentPlaylistMap = new Map();
+  res.status(200).send("hello")
+})
+
+
 async function getSpotifyTracks(playlistid){
   try{
     const result = await fetch(`https://api.spotify.com/v1/playlists/${playlistid}`, {
@@ -157,66 +189,18 @@ async function getSpotifyTracks(playlistid){
     for (let i = 0; i <= totalTracks -1; i++){
       currentPlaylistArray.push(profile.tracks.items[i].track.name)
       if (profile.tracks.items[i].track.artists[0].name != null){
-        currentPlaylistMap[profile.tracks.items[i].track.name] =  profile.tracks.items[i].track.artists[0].name;
+        currentPlaylistMap[profile.tracks.items[i].track.name] = profile.tracks.items[i].track.artists[0].name;
       }
       else{
         currentPlaylistMap[profile.tracks.items[i].track.name] =  "";
       }
     }
-    getAppleToken();
+    return currentPlaylistMap;
   }
   catch{
     console.log("error")
   }
 }
-
-async function getAmToken(){
-  
-}
-
-async function getPlaylistName(){
-
-}
-
-async function createAmPlaylist(){
-
-}
-
-async function addToAmPlaylist(){
-  
-}
-
-async function getAppleToken(){ 
-  try{
-    let date = new Date();
-    let iat = date;
-    console.log((iat * 1))
-
-    const header = {
-        kid: "bdef4554463d8078be9af1d9de55"
-    }
-    const payload = {
-      "iss": "DEF123GHIJ",
-      "iat": 1437179036,
-      "exp": 1493298100
-    }    
-    const privateKey = fs.readFileSync("./AuthKey_AUW2Y6ZP3F.p8");
-    let token = jsonwebtoken.sign(payload, privateKey, { header: header, algorithm: "ES256" });
-    console.log(token)
-
-    let req = new Request("https://api.music.apple.com/v1/test", {
-      method:"POST",
-      headers: {
-          'Authorization': 'Bearer '+ token
-      },
-    });
-    console.log(await fetch(req))
-  }
-  catch (err){
-    console.log(err)
-  }
-}
-
 
 function generateRandomString(length){
     let result='';
