@@ -26,7 +26,7 @@ app.get('/', (req,res) => {
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = 'http://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/callback';
+const redirect_uri = 'https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/callback';
 
 app.get('/refresh_token', async (req,res) => {
   try{
@@ -139,7 +139,6 @@ let playlistid = ""
 app.post('/convertplaylist',async(req,res) => {  
   playlistid = req.body.playlistid;
   const redirect_uri_sound = "https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/soundcloudcallback".toString('base64');
-  const state = generateRandomString(60);
   const clientId = process.env.SOUNDCLOUD_CLIENT_ID
   const code_verifier = crypto.pseudoRandomBytes(65).toString('base64');
   const codeChallenge = crypto
@@ -149,20 +148,21 @@ app.post('/convertplaylist',async(req,res) => {
   .replace(/\+/g, '-')  // Replace "+" with "-"
   .replace(/\//g, '_')  // Replace "/" with "_"
   .replace(/=+$/, '');  // Remove padding
-  ENCOde
-  const params =  new URLSearchParams({
-    client_id: clientId, 
-    redirect_uri: redirect_uri_sound,
-    code_challenge:codeChallenge,
-    code_challenge_method:"S256",
-    grant_type: 'authorization_code',  // Added the missing response_type parameter
-  });
-  console.log(codeChallenge)
 
-  const url=`https://secure.soundcloud.com/authorize?${params.toString()}`;
-
-  res.set("Allow-Control-Access-Origin","https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/")
-  res.redirect(url)
+  var state = generateRandomString(16);
+  var scope = 'user-read-private user-read-email';
+  
+    res.redirect('https://secure.soundcloud.com/authorize?' +
+      querystring.stringify({
+        response_type: 'code',
+        client_id: clientId,
+        code_challenge:codeChallenge,
+        code_challenge_method:"S256",
+        scope: scope,
+        redirect_uri: redirect_uri_sound,
+        state: state
+      }));
+ 
 })
 
 
