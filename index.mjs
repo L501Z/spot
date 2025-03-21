@@ -26,7 +26,7 @@ app.get('/', (req,res) => {
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = 'http://127.0.0.1:3000/callback';
+const redirect_uri = 'http://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/callback';
 
 app.get('/refresh_token', async (req,res) => {
   try{
@@ -149,28 +149,25 @@ app.post('/convertplaylist',async(req,res) => {
   .replace(/\+/g, '-')  // Replace "+" with "-"
   .replace(/\//g, '_')  // Replace "/" with "_"
   .replace(/=+$/, '');  // Remove padding
+  ENCOde
   const params =  new URLSearchParams({
     client_id: clientId, 
     redirect_uri: redirect_uri_sound,
     code_challenge:codeChallenge,
     code_challenge_method:"S256",
-    response_type: 'code',  // Added the missing response_type parameter
+    grant_type: 'authorization_code',  // Added the missing response_type parameter
   });
+  console.log(codeChallenge)
 
   const url=`https://secure.soundcloud.com/authorize?${params.toString()}`;
-  try{
-    res.set("Allow-Control-Access-Origin","https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev")
-    console.log("hello")
-    res.redirect(url)
-  }
-  catch (error){
-    console.log(error)
-  }
+
+  res.set("Allow-Control-Access-Origin","https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/")
+  res.redirect(url)
 })
 
 
-app.post('/soundcloudcallback', async(req,res)=>{
-
+app.get('/soundcloudcallback', async(req,res)=>{
+  console.log(req.query)
   res.status(200).send("hello")
 })
 
