@@ -26,7 +26,7 @@ app.get('/', (req,res) => {
 
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_uri = 'https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/callback';
+const redirect_uri = 'https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/callback';
 
 app.get('/refresh_token', async (req,res) => {
   try{
@@ -138,7 +138,7 @@ let playlistid = ""
 
 app.post('/convertplaylist',async(req,res) => {  
   playlistid = req.body.playlistid;
-  const redirect_uri_sound = "https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/soundcloudcallback".toString('base64');
+  const redirect_uri_sound = "https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/soundcloudcallback".toString('base64');
   const clientId = process.env.SOUNDCLOUD_CLIENT_ID
   const code_verifier = crypto.pseudoRandomBytes(65).toString('base64');
   const codeChallenge = crypto
