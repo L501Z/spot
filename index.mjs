@@ -172,7 +172,6 @@ app.post('/convertplaylist',async(req,res) => {
 
 
 app.post('/soundcloudcallback', async(req,res)=>{
-  console.log(req.query)
 
   res.status(200).send("hello")
 })
