@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT
 app.set("view engine", "ejs")
 const __dirname = process.cwd();
-app.use(express.static(__dirname+'\\views'))
+app.use(express.static(__dirname+'/views'))
 /**
  * Middleware that parses and encodes json
  */ 
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.get('/', (req,res) => {
-    res.status(200).render(__dirname+"\\views");
+    res.status(200).render(__dirname+"/views");
 })
 
 
@@ -92,7 +92,7 @@ app.get('/callback', async function(req, res) {
       const y= await response.json();
       process.env.ACCESS_TOKEN = y.access_token;
       process.env.REFRESH_TOKEN_1 = y.refresh_token;
-      res.status(200).render(__dirname+"\\views\\logonpage.ejs");
+      res.status(200).render(__dirname+"/views/logonpage.ejs");
     } catch (error){
       console.log("error fetching request")
     }
@@ -138,7 +138,7 @@ let playlistid = ""
 
 app.post('/convertplaylist',async(req,res) => {  
   playlistid = req.body.playlistid;
-  const redirect_uri_sound = "127.0.0.1:3000/soundcloudcallback".toString('base64');
+  const redirect_uri_sound = "https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs…-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/soundcloudcallback".toString('base64');
   const state = generateRandomString(60);
   const clientId = process.env.SOUNDCLOUD_CLIENT_ID
   const code_verifier = crypto.pseudoRandomBytes(65).toString('base64');
@@ -156,13 +156,11 @@ app.post('/convertplaylist',async(req,res) => {
     code_challenge_method:"S256",
     response_type: 'code',  // Added the missing response_type parameter
   });
-  console.log(codeChallenge)
-  console.log(code_verifier)
 
   const url=`https://secure.soundcloud.com/authorize?${params.toString()}`;
   try{
-    res.set("Allow-Control-Access-Origin","http://127.0.0.1:3000")
-
+    res.set("Allow-Control-Access-Origin","https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev")
+    console.log("hello")
     res.redirect(url)
   }
   catch (error){
