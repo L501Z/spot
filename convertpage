@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello</title>
+    <script>
+
+    </script>
+</head>
+<body>
+    <nav class="topnav">
+        <li><a class="active" href="#home">Home</a></li>
+        <li><a href="#news">Tutorial</a></li>
+        <li><a href="#contact">About</a></li>
+        <li><img class="navImg" src="spotify.png" height="100px"></li>
+    </nav>
+
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            background-color: rgb(30, 30, 30);
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(255, 255, 255);
+        }
+        .topnav{
+            width: 100%;
+            height: 13vh;
+            background-color: rgb(125, 124, 123);
+            color: white;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        li {
+            float: left;
+            width: 10vw;
+        }
+
+        .navImg{
+            padding-left: 580%;
+            padding-top: 6%;
+        }
+
+        li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 56px 16px;
+        text-decoration: none;
+        }
+
+        li a:hover {
+        background-color: #111;
+        }
+
+        .active {
+        background-color: #252625;
+        }
+    </style>
+<div class="userDataContainer">
+    <div class="userData">
+	<div class="currentPlaylistData">
+		<div class="playlistphoto"><img src="spotify.png" id="currentPlaylistPhoto" height="300px"  alt="currentplaylist"></div>
+	</div>       
+
+	<div class="newPlaylistName">
+	   <input placeholder="Enter New PlayList Name" id="textInput">
+	   <button class="convert" id="loader" onclick="confirmConvert()">Confirm</button>
+       </div> 
+    </div>
+</div>
+
+<style>
+    .userData{
+        background-color: rgb(22, 21, 22);
+        width: 40vw;
+        border-radius: 25px;
+        grid-row: 2/8;
+        grid-column: 2;
+        display: grid;
+        grid-template-columns: 220px 60px 250px;
+        grid-template-rows: 60px 100px;
+    }
+    .userDataContainer{
+        display: grid;
+        grid-template-columns: 30% 30%;
+        grid-template-rows: 100px 100px 100px 100px 100px 100px 100px 100px;
+    }
+    .displayNamePretext{
+        margin-left: 30%;
+        grid-column: 2/4;
+    }
+
+    .currentPlaylistData{
+	grid-row: 2;
+	grid-column: 2;
+    }
+
+
+    .newPlaylistName{
+	grid-row:5;
+  	grid-column:3;
+	margin-top:90px;
+    }
+
+
+
+   .convert{
+	margin-top:20px; 
+        text-decoration: none;
+        padding: 10px;
+        font-family: "Open Sans", sans-serif;
+        font-size: 16px;
+        letter-spacing: 2px;
+        width: 9vw;
+        height: 10vh;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #000;
+        cursor: pointer;
+        border: 3px solid;
+        padding: 0.25em 0.5em;
+        box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+    .convert:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+    }
+
+    @media (min-width: 768px) {
+    .convert {
+        padding: 0.25em 0.75em;
+        }
+    }
+    #displayName{
+        margin-left: 45%;
+    }
+
+    .spinner {
+      border: 4px solid#0a7e30; /* Light grey background */
+      border-top: 4px solid #323332; /* Blue color for the rotating part */
+      background-color: #0a7e30;
+      border-radius: 50%; /* Make it circular */
+      width: 70px; /* Width of the loader */
+      height: 70px; /* Height of the loader */
+      animation: spin 1s linear infinite; /* Spin animation */
+      margin-left: 23%;
+    }
+
+    /* Keyframes for the spin animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+</style>
+
+<script>
+    if (document.referrer == document.URL){
+        document.getElementById("loader").innerText = "";
+        document.getElementById("textInput").style.visibility = "hidden";
+        document.getElementById("loader").classList.remove("convert");
+        document.getElementById("loader").classList.add("spinner");
+    }
+    function confirmConvert(){
+        console.log(document.referrer)
+        console.log(document.URL)
+
+        //turn button into loady spinner thing 
+        console.log("hello")
+        document.getElementById("loader").innerText = "";
+        document.getElementById("textInput").style.visibility = "hidden";
+        document.getElementById("loader").classList.remove("convert");
+        document.getElementById("loader").classList.add("spinner");
+        //redirect to back end 
+        window.location.assign("https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/confirmConvert?callback="+window.location.href)
+
+    }
+
+    async function getImgUrl(){
+        profile2 = await fetch("/currentPlaylistUrl");
+        const profile3 = await profile2.json()
+        document.getElementById("currentPlaylistPhoto").src =profile3.url;
+    }
+    getImgUrl()
+</script>
+</body>
+</html>
