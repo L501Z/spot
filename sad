@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello</title>
+    <script>
+let profile2 = null;
+async function start(){
+    try{
+        let profile = await fetch(`/profile`);
+        profile = await profile.json();
+        profile2 = await fetch(`/playlists`);
+        profile2 = await profile2.json();
+        populateUI(profile, profile2);
+    }
+    catch (err){
+        console.log(err)
+    }
+}
+
+function populateUI(profile, profile2) {
+    document.getElementById("displayName").innerText = profile.display_name;
+    document.getElementById("id").innerText = profile.id;
+    let count = 1;
+
+    let title = `userPlay${count}`
+    for (let i= 0; i<= 8; i++){
+        if (profile2.items[i].images === null){
+            document.getElementById(title+"x").innerText = profile2.items[i].name;
+            document.getElementById(title).src = "placeholder2.png";
+            count++;    
+            title = `userPlay${count}`
+        }
+        else{
+            document.getElementById(title+"x").innerText = profile2.items[i].name;
+            document.getElementById(title).src = profile2.items[i].images[0].url;
+            count++;    
+            title = `userPlay${count}`
+        }
+
+    }
+
+    document.getElementById('differentPlaylistInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') {
+        //handle no token error
+        if ([document.getElementById("differentPlaylistInput").value].length >=1 && [document.getElementById("differentPlaylistInput").value].length <=20){
+            const textInput = document.getElementById("differentPlaylistInput").value;
+
+            //search profile2 for a direct match
+
+            console.log(profile2)
+        
+            for (let i= 0; i<=profile2.items.length - 1;i++){
+                if (profile2.items[i].name === textInput){
+                    let imgUrl = profile2.items[i].images[0].url;
+                    console.log(imgUrl)
+                    displayPlaylistCustom(i, imgUrl);
+                }
+            }
+
+            //if no direct match, then figure out a way to find subsets of strings that are close (regex if applicable)
+
+            
+        }
+        document.getElementById("differentPlaylistInput").value = "Playlist Name between 1 & 20 characters"
+        
+        } });
+
+}
+    </script>
+</head>
+<body>
+    <nav class="topnav">
+        <li><a class="active" href="#home">Home</a></li>
+        <li><a href="#news">Tutorial</a></li>
+        <li><a href="#contact">About</a></li>
+        <li><img class="navImg" src="spotify.png" height="100px"></li>
+    </nav>
+
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            background-color: rgb(30, 30, 30);
+            font-family: Arial, Helvetica, sans-serif;
+            color: rgb(255, 255, 255);
+        }
+        .topnav{
+            width: 100%;
+            height: 13vh;
+            background-color: rgb(125, 124, 123);
+            color: white;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        li {
+            float: left;
+            width: 10vw;
+        }
+
+        .navImg{
+            padding-left: 580%;
+            padding-top: 6%;
+        }
+
+        li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 56px 16px;
+        text-decoration: none;
+        }
+
+        li a:hover {
+        background-color: #111;
+        }
+
+        .active {
+        background-color: #252625;
+        }
+    </style>
+<div class="userDataContainer">
+    <div class="userData">
+        <section id="profile">
+        <h2 class="displayNamePretext">Logged in </h2>
+        <span id="displayName"></span>
+        <ul>
+        <li>User ID: <span id="id"></span></li>
+        </ul>
+        <button onclick="start()" id="logIn">GET PLAYLISTS</button>
+        </section>
+    </div>
+</div>
+
+<style>
+    .userData{
+        background-color: rgb(22, 21, 22);
+        width: 40vw;
+        border-radius: 25px;
+        grid-row: 2;
+        grid-column: 2;
+        display: grid;
+        grid-template-columns: 250px 250px 250px;
+        grid-template-rows: 200px 300px;
+    }
+    .userDataContainer{
+        display: grid;
+        grid-template-columns: 30%;
+        grid-template-rows: 200px 300px;
+    }
+    .displayNamePretext{
+        margin-left: 30%;
+        grid-column: 2;
+    }
+    #displayName{
+        margin-left: 45%;
+    }
+    #logIn{
+        margin-top: 30%;
+        margin-left: 42%;
+        text-decoration: none;
+        padding: 10px;
+        font-family: "Open Sans", sans-serif;
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #000;
+        cursor: pointer;
+        border: 3px solid;
+        padding: 0.25em 0.5em;
+        box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+    #logIn:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+    }
+
+    @media (min-width: 768px) {
+    #logIn {
+        padding: 0.25em 0.75em;
+    }
+}
+    
+</style>
+
+<script>
+    let playlistId ="";
+
+    function displayPlaylist(chosenPhoto){
+
+        for (let i = 1; i <= 9; i++){
+            let title = `userPlay${i}x`;
+            document.getElementById(title).innerText = "";
+            if (i === chosenPhoto){
+                
+                let u = document.getElementById(`userPlay${chosenPhoto}`).src;
+                document.getElementById("userPlay1").src = u;
+                document.getElementById(`userPlay${chosenPhoto}`).src = "";
+                document.getElementById(`userPlay${chosenPhoto}`).style.visibility = "hidden";
+
+                //parse playlist data
+                
+                const currentPlaylistName = profile2.items[(chosenPhoto-1)].name
+                
+                const currentPlaylistUrl = profile2.items[(chosenPhoto-1)].external_urls.spotify
+
+                const currentPlaylistTotalTracks = profile2.items[(chosenPhoto-1)].tracks.total
+
+                if (!currentPlaylistTotalTracks || currentPlaylistTotalTracks === 0 ){
+                    document.getElementById("userPlay1x").innerHTML="Cannot convert empty playlist";
+                }
+                console.log(currentPlaylistTotalTracks)
+                document.getElementById("userPlay2x").style.visibility="visible";
+                document.getElementById("userPlay3x").style.visibility="visible";
+                document.getElementById("userPlay4x").style.visibility="visible";
+                document.getElementById("userPlay5x").style.visibility="visible";
+                document.getElementById("userPlay8").style.visibility="visible";
+
+                document.getElementById("userPlay2x").innerHTML="Playlist Name: " + currentPlaylistName;
+                document.getElementById("userPlay3x").innerHTML="Url: " + currentPlaylistUrl;
+                document.getElementById("userPlay4x").innerHTML="Total Tracks: " + currentPlaylistTotalTracks;
+                document.getElementById("userPlay5x").innerHTML="convert";
+                document.getElementById("userPlay8").src="scroll.png";
+
+                document.getElementById("userPlay5x").classList.add("button");
+                for (let i = 1; i<= 9; i++){
+                    document.getElementById(`userPlay${i}`).onclick = "";   
+                }
+                playlistId = profile2.items[(chosenPhoto-1)].id
+                document.getElementById("userPlay6x").innerHTML = playlistId;
+                
+                for (let i = 1; i<= 9;i++){
+                    let x = `userPlay${i}`;
+                    if (i > 1){
+                        document.getElementById(x).style.visibility="hidden";
+                    }
+                    if (i > 6){
+                        document.getElementById(x+"x").innerText = null;
+                    }
+
+                }
+            return
+            }
+            else{
+                if (i != 1){
+                    let x = `userPlay${i}`;
+                        document.getElementById(x).style.visibility="hidden";
+                        document.getElementById(x).innerText = null;
+                    }
+            }
+
+
+        }
+    }
+    
+
+    
+    function displayPlaylistCustom(chosenPhoto, imgUrl){
+
+        document.getElementById("userPlay1").src = imgUrl;
+        console.log(document.getElementById("userPlay1").src)
+        console.log(document.getElementById("userPlay1").src)
+        //parse playlist data
+        
+        const currentPlaylistName = profile2.items[(chosenPhoto)].name
+        
+        const currentPlaylistUrl = profile2.items[(chosenPhoto)].external_urls.spotify
+
+        const currentPlaylistTotalTracks = profile2.items[(chosenPhoto)].tracks.total
+
+        if (!currentPlaylistTotalTracks || currentPlaylistTotalTracks === 0 ){
+            document.getElementById("userPlay1x").innerHTML="Cannot convert empty playlist";
+        }
+        document.getElementById("userPlay2x").style.visibility="visible";
+        document.getElementById("userPlay3x").style.visibility="visible";
+        document.getElementById("userPlay4x").style.visibility="visible";
+        document.getElementById("userPlay5x").style.visibility="visible";
+        document.getElementById("userPlay8").style.visibility="visible";
+
+        document.getElementById("userPlay2x").innerHTML="Playlist Name: " + currentPlaylistName;
+        document.getElementById("userPlay3x").innerHTML="Url: " + currentPlaylistUrl;
+        document.getElementById("userPlay4x").innerHTML="Total Tracks: " + currentPlaylistTotalTracks;
+        document.getElementById("userPlay5x").innerHTML="convert";
+        document.getElementById("userPlay8").src="scroll.png";
+
+        document.getElementById("userPlay5x").classList.add("button");
+        for (let i = 1; i<= 9; i++){
+            document.getElementById(`userPlay${i}`).onclick = "";   
+        }
+        playlistId = profile2.items[(chosenPhoto)].id
+        document.getElementById("userPlay6x").innerHTML = playlistId;
+
+        for (let i = 1; i<= 9;i++){
+            let x = `userPlay${i}`;
+            if (i > 1){
+                document.getElementById(x).style.visibility="hidden";
+            }
+            if (i > 6){
+                document.getElementById(x+"x").innerText = null;
+            }
+            if (i == 1){
+                document.getElementById(x+"x").innerText = null;
+            }
+
+        }
+}
+
+//NOTE ADD MULTIPLE PAGES TO SCROLL THROUGH PLAYLISTS - JUST MAKE THE PLAYLIST VIEW BETTER IN GENERAL, 
+
+
+
+
+     
+     async function convertPlaylist(){
+	//window.locate is prefered as fetch throws errors possibly due to client side handling of requests??
+        profile4 = await fetch(`/genSpotifyTracks?playlistid=${playlistId}`);
+        window.location.assign("https://3020-cs-41a8daff-de45-4120-b336-a76208ad00d4.cs-europe-west1-iuzs.cloudshell.dev/convertplaylist")
+    }
+
+</script>
+
+<div class="pictureContainerWrapper">
+    <div class="pictureContainer">
+        <span id="userPlay1Container"><div class="playlistName1" id="userPlay1x"></div><img id="userPlay1" onclick="displayPlaylist(1)" class="userPlayClass" height="300px" title="playlist1" src="placeholder.png"></span>
+        <span id="userPlay2Container"><div class="playlistName2" id="userPlay2x"></div><img id="userPlay2" onclick="displayPlaylist(2)" class="userPlayClass" height="300px" title="playlist2" src="placeholder.png"></span>
+        <span id="userPlay3Container"><div class="playlistName3" id="userPlay3x"></div><img id="userPlay3" onclick="displayPlaylist(3)" class="userPlayClass" height="300px" title="playlist3" src="placeholder.png"></span>
+        <span id="userPlay4Container"><div class="playlistName4" id="userPlay4x"></div><img id="userPlay4" onclick="displayPlaylist(4)" class="userPlayClass" height="300px" title="playlist4" src="placeholder.png"></span>
+        <span id="userPlay5Container"><div class="playlistName5" id="userPlay5x" onclick="convertPlaylist()" class="button"></div><img id="userPlay5" onclick="displayPlaylist(5)" class="userPlayClass" height="300px" title="playlist5" src="placeholder.png"></span>
+        <span id="userPlay6Container"><div class="playlistName6" id="userPlay6x"></div><img id="userPlay6" onclick="displayPlaylist(6)" class="userPlayClass" height="300px" title="playlist6" src="placeholder.png"></span>
+        <span id="userPlay7Container"><div class="playlistName7" id="userPlay7x"></div><img id="userPlay7" onclick="displayPlaylist(7)" class="userPlayClass" height="300px" title="playlist7" src="placeholder.png"></span>
+        <span id="userPlay8Container"><div class="playlistName8" id="userPlay8x"></div><img id="userPlay8" onclick="displayPlaylist(8)" class="userPlayClass" height="300px" title="playlist8" src="placeholder.png"></span>
+        <span id="userPlay9Container"><div class="playlistName9" id="userPlay9x"></div><img id="userPlay9" onclick="displayPlaylist(9)" class="userPlayClass" height="300px" title="playlist9" src="placeholder.png"></span>
+    </div>
+</div>
+
+
+<style>
+    .pictureContainerWrapper{
+        display: grid;
+        margin-top: 20px;
+        grid-template-rows: 90px;
+    }
+
+    .pictureContainer{
+        display: grid;  
+        grid-row: 2;
+        grid-column: 2;
+        grid-template-columns: 20% 20% 20% ;
+        grid-gap: 120px;
+        position: relative;
+    }
+
+    .userPlayClass{
+        cursor: pointer;
+    }
+
+    .button {
+    position: relative;
+    padding: 8px 16px;
+    background: #009579;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.button:active {
+    background: #007a63;
+}
+
+.button__text {
+    font: bold 20px 'Quicksand', san-serif;
+    color: #ffffff;
+    transition: all 0.2s;
+}
+
+
+</style>
+<div id="differentPlaylistContainerWrapper">
+    <div id="differentPlaylistContainer">
+        <h2 id="differentPlaylistMessage">Don't see your playlist here?</h2>
+        <h3 id="differentPlaylistMessage">Type the name of your playlist and tool will find it on your profile:</h3>
+        <input id="differentPlaylistInput">
+    </div>
+</div>
+
+<style>
+    #differentPlaylistContainer{
+        width: 20vw;
+        background-color: rgb(22, 21, 22);
+        margin-left: 38.5%;
+        margin-top: 10%;
+        padding: 100px;
+        justify-items: center;
+        border-radius: 25px;
+    }
+    #differentPlaylistContainerWrapper{
+        width: 90vw;
+        background-color: #201e1e;
+        margin-bottom: 250px;
+    }
+    #differentPlaylistMessage{
+        padding-bottom: 50px;
+    }
+</style>
+
+<script>
+
+</script>
+</body>
+</html>
